@@ -7,6 +7,7 @@ const Container = styled.div`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
+  background-color: ${props => (props.isDragging ? 'lightgreen' : 'white')}
 `
 ;
 
@@ -23,12 +24,13 @@ class Task extends Component {
         draggableId={this.props.task.id}
         index={this.props.index}>
         {
-          (provided)=>{
+          (provided, snapshot)=>{ // Snapshot contains props that you can use to style your draggable components while on drag.
             return (
               <Container 
                 {...provided.draggableProps} // These props need to be applied to the components that we want to move around 
                 {...provided.dragHandleProps} // These are the props that needs to be applied to the part of the component that we want to use to control the entire component
-                ref={provided.innerRef}>
+                ref={provided.innerRef}
+                isDragging={snapshot.isDragging}>
                 {this.props.task.content}
               </Container>
             )

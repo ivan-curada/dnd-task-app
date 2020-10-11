@@ -14,6 +14,8 @@ const Title = styled.h3`
 `;
 const TaskList = styled.div`
   padding: 8px;
+  transition: background-color 200ms ease-in;
+  background-color: ${props => (props.isDraggingOver ? 'skyblue' : 'white')}
 `;
 
 class Column extends Component {
@@ -27,24 +29,23 @@ class Column extends Component {
             These are props that needs to be applied to the components 
             that you want to designate as your droppable.
           */}
-          {provided => (
-            /**
-             * The provided object has a property called `innerRef`.
-             * It is a function used to supply the DOM node of your component
-             * to React-DND.
-             */
-            <TaskList 
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              >
+          {
+            (provided, snapshot) => {
+              return (
+                <TaskList 
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  isDraggingOver={snapshot.isDraggingOver}
+                  >
 
-              {this.props.tasks.map((task, index)=> <Task key={task.id} task={task} index={index}/>)}
-              {/* `provided.placeholder` is used to increase the available space
-                   in a droppable during a drag when it's needed.
-              */}
-              {provided.placeholder}
-            </TaskList>
-          )
+                  {this.props.tasks.map((task, index)=> <Task key={task.id} task={task} index={index}/>)}
+                  {/* `provided.placeholder` is used to increase the available space
+                      in a droppable during a drag when it's needed.
+                  */}
+                  {provided.placeholder}
+                </TaskList>
+              )
+            }
           }
         </Droppable>
       </Container>

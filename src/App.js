@@ -9,7 +9,54 @@ class App extends Component {
   state = initial_data;
 
   onDragEnd = result => {
-    console.log(result)
+
+    // get the destination, the source, and the item's draggableID
+    const { destination, source, draggableId } = result;
+
+    // If there's no destination, or if the item was dragged to invalid area,
+    // Do nothing
+    if(!destination){
+      return;
+    }
+    
+    // If the item was dropped in the same area and was placed in the same position,
+    // Do nothing
+    if(
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return ;
+    }
+
+    // Get the column;
+    const column =  this.state.columns[source.droppableId];
+
+    // Get the column's task IDs
+    const newTaskIds = Array.from(column.taskIds);
+    
+    // Remove the item from its current position
+    newTaskIds.splice(source.index, 1);
+
+    // Add it to the desired position index
+    newTaskIds.splice(destination.index, 0, draggableId)
+
+    // Compose the new column
+    const newColumn = {
+      ...column,
+      taskIds: newTaskIds
+    };
+    
+    // Compose the updated state
+    const newState = {
+      ...this.state,
+      columns: {
+        ...this.state.columns,
+        [newColumn.id]: newColumn
+      }
+    }
+
+    // Assign it back to the state;
+    this.setState(newState)
   }
 
   render() {
