@@ -8,7 +8,32 @@ class App extends Component {
 
   state = initial_data;
 
+  /**
+   * When the dragging starts, 
+   * we want to customize the appearance of the text
+   */
+  onDragStart = () => {
+    document.body.style.color = 'orange';
+    document.body.style.transition = 'background-color 200ms ease-in';
+  }
+
+  /**
+   * When the dragging happens,
+   * we want to alter the opacity by dividing it's position over the total number of items
+   */
+  onDragUpdate = update => {
+    const { destination } = update;
+    const opacity = destination
+      ? destination.index / Object.keys(this.state.tasks).length
+      : 0;
+    
+    document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`
+  }
+
   onDragEnd = result => {
+
+    document.body.style.color = 'inherit';
+    document.body.style.backgroundColor = 'inherit';
 
     // get the destination, the source, and the item's draggableID
     const { destination, source, draggableId } = result;
@@ -62,6 +87,8 @@ class App extends Component {
   render() {
     return (
       <DragDropContext
+        onDragStart={this.onDragStart}
+        onDragUpdate={this.onDragUpdate}
         onDragEnd={this.onDragEnd}>
         {
           this.state.columnOrder.map((columnId)=>{
